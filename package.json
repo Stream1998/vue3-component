@@ -1,0 +1,28 @@
+{
+  "name": "vue3-component",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm -C playground dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@lxd/components": "workspace:*",
+    "@lxd/theme": "workspace:*",
+    "@lxd/utils": "workspace:*",
+    "typescript": "^5.3.3",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "sass": "^1.71.1",
+    "unplugin-vue-define-options": "^1.4.2"
+  }
+}

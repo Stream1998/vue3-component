@@ -1,0 +1,34 @@
+@use 'variable' as *;
+@forward 'variable';
+
+
+@mixin b($block) {
+	$B: $namespace+'-'+$block;
+	.#{$B} {
+		@content;
+	}
+}
+
+@mixin e($element) {
+	@at-root {
+		#{&+$element-separator+$element} {
+			@content;
+		}
+	}
+}
+
+@mixin m($modifier) {
+	@at-root {
+		#{&+$modifier-separator+$modifier} {
+			@content;
+		}
+	}
+}
+
+@mixin when($state) {
+	@at-root {
+		&.#{$state-prefix+$state} {
+			@content;
+		}
+	}
+}
