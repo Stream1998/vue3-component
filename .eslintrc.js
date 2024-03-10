@@ -34,6 +34,7 @@ module.exports = {
     'vue/singleline-html-element-content-newline': 'off',
     'vue/multi-word-component-names': 'off',
     'vue/component-definition-name-casing': ['error', 'kebab-case'],
+    '@typescript-eslint/no-explicit-any': 'off',
   },
   globals: {
     defineProps: 'readonly',
