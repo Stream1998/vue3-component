@@ -25,7 +25,9 @@
 - `@at-root`: 将样式输出到根层级上，而不是嵌套
 - `@content`: 类似于插槽，内容占位
 
-## 定义组件名称
+## 组件
+
+### 定义组件名称
 
 在 `setup` 模式下使用 `defineOptions`，[Vue3.3+支持](https://cn.vuejs.org/api/sfc-script-setup.html#defineoptions)。
 
@@ -53,7 +55,7 @@ export default defineConfig({
 });
 ```
 
-## 为组件增加 install 方法
+### 为组件增加 install 方法
 
 ```ts
 import type { App, Plugin } from 'vue';
@@ -69,7 +71,7 @@ export function withInstall<T>(component: T) {
 }
 ```
 
-## 组件类型声明
+### 组件类型声明
 
 声明全局组件，提供类型提示，方便开发。
 
@@ -79,4 +81,37 @@ declare module 'vue' {
     XdIcon: typeof Icon;
   }
 }
+```
+
+## 文档
+
+使用 `vitepress` 创建文档
+
+安装
+
+```shell
+pnpm add -D vitepress
+```
+
+初始化
+
+```shell
+npx vitepress init
+```
+
+[全局注册组件](https://vitepress.dev/zh/guide/extending-default-theme#registering-global-components)
+
+创建 `.vitepress/theme/index.ts` 文件
+
+```ts
+import type { Theme } from 'vitepress';
+import DefaultTheme from 'vitepress/theme';
+import Icon from '@lxd/components/icon';
+
+export default {
+  extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.use(Icon);
+  },
+} satisfies Theme;
 ```

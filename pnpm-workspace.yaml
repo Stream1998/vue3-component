@@ -1,3 +1,4 @@
 packages:
   - playground
-  - "package/**"
+  - docs
+  - 'package/**'
