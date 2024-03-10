@@ -13,7 +13,7 @@
 
 ## sass
 
-- `@use`: 导入其他sass文件的样式
+- `@use`: 导入其他 sass 文件的样式
 - `@forward`: 将样式导出
 - `@mixin`: 声明公共方法
 - `@include`: 调用公共方法
@@ -27,7 +27,19 @@
 
 ## 定义组件名称
 
-安装 `unplugin-vue-define-options`
+在 `setup` 模式下使用 `defineOptions`，[Vue3.3+支持](https://cn.vuejs.org/api/sfc-script-setup.html#defineoptions)。
+
+```ts
+defineOptions({
+  name: 'xd-icon',
+});
+```
+
+Vue3.3 以前安装 `unplugin-vue-define-options`
+
+```shell
+pnpm i unplugin-vue-define-options -D
+```
 
 需要在配置文件配置，例如 `vite.config.ts`：
 
@@ -38,39 +50,33 @@ import defineOptions from 'unplugin-vue-define-options/vite';
 
 export default defineConfig({
   plugins: [vue(), defineOptions()],
-})
-```
-
-在 `setup` 模式下使用 `defineOptions` 定义组件配置项。
-
-```ts
-defineOptions({
-  name: 'xd-icon'
 });
 ```
 
-## 组件插件化
+## 为组件增加 install 方法
 
 ```ts
-import type { App, Plugin } from "vue";
+import type { App, Plugin } from 'vue';
 
 type SFCWithInstall<T> = T & Plugin;
 
 export function withInstall<T>(component: T) {
-	(component as SFCWithInstall<T>).install= function(app:App) {
-		const { name } = component as unknown as { name: string };
-		app.component(name, component as SFCWithInstall<T>);
-	}
-	return component as SFCWithInstall<T>;
+  (component as SFCWithInstall<T>).install = function (app: App) {
+    const { name } = component as unknown as { name: string };
+    app.component(name, component as SFCWithInstall<T>);
+  };
+  return component as SFCWithInstall<T>;
 }
 ```
 
 ## 组件类型声明
 
+声明全局组件，提供类型提示，方便开发。
+
 ```ts
 declare module 'vue' {
   export interface GlobalComponents {
-    XdIcon: typeof Icon
+    XdIcon: typeof Icon;
   }
 }
 ```

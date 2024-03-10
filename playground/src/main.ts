@@ -5,6 +5,7 @@ import '@lxd/theme/src/index.scss';
 
 const app = createApp(App);
 
+console.log(Icon);
 const plugins = [Icon];
 plugins.forEach(plugin => app.use(plugin));
 
