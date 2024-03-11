@@ -1,6 +1,6 @@
 import { ExtractPropTypes, PropType } from 'vue';
 
-type BaseType = string | number;
+export type BaseType = string | number;
 
 export interface TreeOptions {
   label?: BaseType;
@@ -32,6 +32,10 @@ export const treeProps = {
   childrenField: {
     type: String,
     default: 'children',
+  },
+  defaultExpandedKeys: {
+    type: Array as PropType<BaseType[]>,
+    default: () => [],
   },
 } as const;
 

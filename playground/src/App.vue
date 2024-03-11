@@ -53,7 +53,10 @@ const data = ref(createData());
     </xd-icon>
   </div>
   <div>
-    <xd-tree :data="data"></xd-tree>
+    <xd-tree
+      :data="data"
+      :default-expanded-keys="['40', '41', '4130']"
+    ></xd-tree>
   </div>
 </template>
 
