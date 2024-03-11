@@ -1,8 +1,27 @@
 @use './config/mixins.scss' as *;
 
 @include b(tree) {
-  @include e(node) {
-    display: flex;
-    align-items: center;
+  display: inline-block;
+  width: 100%;
+}
+
+@include b('tree-node') {
+  display: flex;
+  padding: 5px 0;
+  align-items: center;
+  @include e('expand-icon') {
+    cursor: pointer;
+    transform: rotate(0deg);
+    transition: transform 0.1s ease-in;
+    @include when(expand) {
+      transform: rotate(90deg);
+    }
+    @include when(leaf) {
+      color: transparent;
+      cursor: default;
+    }
+  }
+  &:hover {
+    background-color: #ccc;
   }
 }

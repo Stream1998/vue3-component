@@ -44,7 +44,11 @@ export const treeNodeProps = {
     type: Object as PropType<TreeNode>,
     required: true,
   },
+  isExpand: Boolean,
 } as const;
 
+export const treeNodeEmits = {
+  toggle: (node: TreeNode) => node,
+};
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>;
 export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>;

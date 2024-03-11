@@ -52,9 +52,7 @@ const data = ref(createData());
       </svg>
     </xd-icon>
   </div>
-  <div>
-    <xd-tree :data="data" :default-expanded-keys="['40', '41']"></xd-tree>
-  </div>
+  <xd-tree :data="data" :default-expanded-keys="['40', '41']"></xd-tree>
 </template>
 
 <style scoped></style>
