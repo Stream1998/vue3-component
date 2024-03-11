@@ -5,6 +5,15 @@
   width: 100%;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @include b('tree-node') {
   display: flex;
   padding: 5px 0;
@@ -17,8 +26,12 @@
       transform: rotate(90deg);
     }
     @include when(leaf) {
+      pointer-events: none;
       color: transparent;
       cursor: default;
+    }
+    @include when(loading) {
+      animation: spin 1s linear infinite;
     }
   }
   &:hover {

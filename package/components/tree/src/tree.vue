@@ -38,7 +38,7 @@ const treeOptions = createTreeOptions(
 );
 
 // 格式化数据，构建树
-function createTree(data: TreeOptions[]): TreeNode[] {
+function createTree(data: TreeOptions[], parent: TreeNode | null = null): TreeNode[] {
   function traverse(
     data: TreeOptions[],
     parent: TreeNode | null = null
@@ -59,21 +59,19 @@ function createTree(data: TreeOptions[]): TreeNode[] {
       return treeNode;
     });
   }
-  return traverse(data);
+  return traverse(data, parent);
 }
 
 watch(
   () => props.data,
   (data: TreeOptions[]) => {
     tree.value = createTree(data);
+    console.log(tree.value);
   },
   {
     immediate: true,
   }
 );
-
-// 根据指定的默认展开key数组，扁平化树
-const expandedKeysRef = ref<Set<BaseType>>(new Set(props.defaultExpandedKeys));
 
 // 逆序遍历
 const reverse = (array, cb) => {
@@ -82,8 +80,11 @@ const reverse = (array, cb) => {
   }
 };
 
+// 根据指定的默认展开key数组，扁平化树
+const expandedKeysSet = ref<Set<BaseType>>(new Set(props.defaultExpandedKeys));
+
 const flattenTree = computed(() => {
-  const expandedKeys = expandedKeysRef.value;
+  const expandedKeys = expandedKeysSet.value;
   const nodes: TreeNode[] = tree.value || [];
   const stack: TreeNode[] = [];
   reverse(nodes, node => stack.push(node));
@@ -108,38 +109,47 @@ const flattenTree = computed(() => {
 
 // 是否展开
 function isExpand(node: TreeNode): boolean {
-  return expandedKeysRef.value.has(node.key);
+  return expandedKeysSet.value.has(node.key);
 }
 
 // 收起
 function collapse(node: TreeNode) {
-  expandedKeysRef.value.delete(node.key);
+  expandedKeysSet.value.delete(node.key);
 }
+
+const loadingKeysSet = ref<Set<BaseType>>(new Set());
 
 // 展开
 function expand(node: TreeNode) {
-  expandedKeysRef.value.add(node.key);
+  expandedKeysSet.value.add(node.key);
+
+
+  if (!isLoading(node)) {
+    loadingKeysSet.value.add(node.key);
+    props.onLoad(node)
+      .then((children: TreeOptions[]) => {
+        node.raw.children = children;
+        node.children = createTree(children, node);
+        loadingKeysSet.value.delete(node.key);
+      });
+  }
 }
 
 // 切换[收起/展开]状态
 function toggle(node: TreeNode) {
-  if (isExpand(node)) {
-    collapse(node);
-  } else {
-    expand(node);
-  }
+  isExpand(node) ? collapse(node) : expand(node);
+}
+
+// 是否加载
+function isLoading(node: TreeNode) {
+  return loadingKeysSet.value.has(node.key);
 }
 </script>
 
 <template>
   <div :class="bem.b()">
-    <xd-tree-node
-      v-for="node in flattenTree"
-      :key="node.key"
-      :node="node"
-      :is-expand="isExpand(node)"
-      @toggle="toggle"
-    ></xd-tree-node>
+    <xd-tree-node v-for="node in flattenTree" :key="node.key" :node="node" :is-expand="isExpand(node)"
+      :is-loading="isLoading(node)" @toggle="toggle"></xd-tree-node>
   </div>
 </template>
 

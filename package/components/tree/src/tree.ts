@@ -37,6 +37,7 @@ export const treeProps = {
     type: Array as PropType<BaseType[]>,
     default: () => [],
   },
+  onLoad: Function as PropType<(node: TreeNode) => Promise<TreeOptions[]>>,
 } as const;
 
 export const treeNodeProps = {
@@ -45,6 +46,7 @@ export const treeNodeProps = {
     required: true,
   },
   isExpand: Boolean,
+  isLoading: Boolean,
 } as const;
 
 export const treeNodeEmits = {
