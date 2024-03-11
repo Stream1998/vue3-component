@@ -75,6 +75,7 @@ watch(
 // 根据指定的默认展开key数组，扁平化树
 const expandedKeysRef = ref<Set<BaseType>>(new Set(props.defaultExpandedKeys));
 
+// 逆序遍历
 const reverse = (array, cb) => {
   for (let i = array.length - 1; i >= 0; --i) {
     cb(array[i]);
@@ -102,7 +103,6 @@ const flattenTree = computed(() => {
       }
     }
   }
-  console.log(result);
   return result;
 });
 
@@ -124,14 +124,10 @@ function expand(node: TreeNode) {
 // 切换[收起/展开]状态
 function toggle(node: TreeNode) {
   if (isExpand(node)) {
-    console.log('收起');
     collapse(node);
   } else {
-    console.log('展开');
     expand(node);
   }
-  console.log(expandedKeysRef.value);
-  console.log(flattenTree.value);
 }
 </script>
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import createNamespace from '@lxd/utils/createBEM';
-import { treeNodeProps, treeNodeEmits } from './tree';
+import { treeNodeProps, treeNodeEmits, TreeNode } from './tree';
 import CaretRight from '@lxd/icons/src/CaretRight';
 
 const bem = createNamespace('tree-node');
-const props = defineProps(treeNodeProps);
+defineProps(treeNodeProps);
 const emits = defineEmits(treeNodeEmits);
 
-function handleExpand() {
-  emits('toggle', props.node);
+function handleExpand(node: TreeNode) {
+  emits('toggle', node);
 }
 </script>
 
@@ -21,7 +21,7 @@ function handleExpand() {
         bem.is('leaf', node.isLeaf),
       ]"
       :size="16"
-      @click="handleExpand"
+      @click="handleExpand(node)"
     >
       <CaretRight></CaretRight>
     </xd-icon>

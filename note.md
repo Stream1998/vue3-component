@@ -25,6 +25,10 @@
 - `@at-root`: 将样式输出到根层级上，而不是嵌套
 - `@content`: 类似于插槽，内容占位
 
+## svg
+
+- fill="currentColor"：使用 color 属性可以设置填充颜色
+
 ## 组件
 
 ### 定义组件名称
@@ -81,6 +85,26 @@ declare module 'vue' {
     XdIcon: typeof Icon;
   }
 }
+```
+
+### 支持 jsx/tsx
+
+安装 `@vitejs/plugin-vue-jsx` 插件
+
+```shell
+pnpm i @vitejs/plugin-vue-jsx -D
+```
+
+使用插件
+
+```ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+
+export default defineConfig({
+  plugins: [vue(), vueJsx()],
+});
 ```
 
 ## 文档
