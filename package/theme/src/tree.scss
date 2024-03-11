@@ -18,6 +18,9 @@
   display: flex;
   padding: 5px 0;
   align-items: center;
+  @include when(selected) {
+    background-color: rgb(202, 106, 240);
+  }
   @include e('expand-icon') {
     cursor: pointer;
     transform: rotate(0deg);
@@ -35,6 +38,6 @@
     }
   }
   &:hover {
-    background-color: #ccc;
+    background-color: rgba(193, 157, 250);
   }
 }

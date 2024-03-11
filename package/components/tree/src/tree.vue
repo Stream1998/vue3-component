@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { TreeNode, TreeOptions, treeProps, BaseType } from './tree';
+import { TreeNode, TreeOptions, treeProps, BaseType, treeEmits } from './tree';
 import createNamespace from '@lxd/utils/createBEM';
 import XdTreeNode from './treeNode.vue';
 
@@ -38,7 +38,10 @@ const treeOptions = createTreeOptions(
 );
 
 // 格式化数据，构建树
-function createTree(data: TreeOptions[], parent: TreeNode | null = null): TreeNode[] {
+function createTree(
+  data: TreeOptions[],
+  parent: TreeNode | null = null
+): TreeNode[] {
   function traverse(
     data: TreeOptions[],
     parent: TreeNode | null = null
@@ -123,11 +126,12 @@ const loadingKeysSet = ref<Set<BaseType>>(new Set());
 function expand(node: TreeNode) {
   expandedKeysSet.value.add(node.key);
 
+  if (node.children.length && !node.isLeaf) return;
 
   if (!isLoading(node)) {
     loadingKeysSet.value.add(node.key);
-    props.onLoad(node)
-      .then((children: TreeOptions[]) => {
+    props.onLoad &&
+      props.onLoad(node).then((children: TreeOptions[]) => {
         node.raw.children = children;
         node.children = createTree(children, node);
         loadingKeysSet.value.delete(node.key);
@@ -137,19 +141,61 @@ function expand(node: TreeNode) {
 
 // 切换[收起/展开]状态
 function toggle(node: TreeNode) {
-  isExpand(node) ? collapse(node) : expand(node);
+  isExpand(node) && !isLoading(node) ? collapse(node) : expand(node);
 }
 
 // 是否加载
 function isLoading(node: TreeNode) {
   return loadingKeysSet.value.has(node.key);
 }
+
+const emits = defineEmits(treeEmits);
+
+const selectedKeys = ref<BaseType[]>([]);
+
+watch(
+  () => props.defaultSelectedKeys,
+  (data: BaseType[]) => {
+    selectedKeys.value = data;
+  },
+  {
+    immediate: true,
+  }
+);
+
+function handleSelect(node: TreeNode) {
+  if (!props.selectable) return;
+  let _selectedKeys = Array.from(selectedKeys.value);
+  if (props.multiple) {
+    const index = _selectedKeys.findIndex(key => node.key === key);
+    if (index > -1) {
+      _selectedKeys.splice(index, 1);
+    } else {
+      _selectedKeys.push(node.key);
+    }
+  } else {
+    _selectedKeys = [node.key];
+  }
+  emits('update:defaultSelectedKeys', _selectedKeys);
+}
+
+function isSelected(node: TreeNode): boolean {
+  return selectedKeys.value.includes(node.key);
+}
 </script>
 
 <template>
   <div :class="bem.b()">
-    <xd-tree-node v-for="node in flattenTree" :key="node.key" :node="node" :is-expand="isExpand(node)"
-      :is-loading="isLoading(node)" @toggle="toggle"></xd-tree-node>
+    <xd-tree-node
+      v-for="node in flattenTree"
+      :key="node.key"
+      :node="node"
+      :is-expand="isExpand(node)"
+      :is-loading="isLoading(node)"
+      :is-selected="isSelected(node)"
+      @toggle="toggle"
+      @select="handleSelect"
+    ></xd-tree-node>
   </div>
 </template>
 

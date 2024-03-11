@@ -6,22 +6,35 @@ import Refresh from '@lxd/icons/src/Refresh';
 
 const bem = createNamespace('tree-node');
 defineProps(treeNodeProps);
-const emits = defineEmits(treeNodeEmits);
+const emit = defineEmits(treeNodeEmits);
 
 function handleExpand(node: TreeNode) {
-  emits('toggle', node);
+  emit('toggle', node);
+}
+
+function handleSelect(node: TreeNode) {
+  emit('select', node);
 }
 </script>
 
 <template>
-  <div :class="bem.b()" :style="{ 'padding-left': node.level * 16 + 'px' }">
-    <xd-icon :class="[
-    bem.e('expand-icon'),
-    bem.is('expand', isExpand),
-    bem.is('leaf', node.isLeaf),
-    bem.is('loading', isLoading)]" :size="16" @click="handleExpand(node)">
-      <CaretRight v-show="!isLoading"></CaretRight>
-      <Refresh v-show="isLoading"></Refresh>
+  <div
+    :class="[bem.b(), bem.is('selected', isSelected)]"
+    :style="{ 'padding-left': node.level * 16 + 'px' }"
+    @click="handleSelect(node)"
+  >
+    <xd-icon
+      :class="[
+        bem.e('expand-icon'),
+        bem.is('expand', isExpand),
+        bem.is('leaf', node.isLeaf),
+        bem.is('loading', isLoading),
+      ]"
+      :size="16"
+      @click.stop="handleExpand(node)"
+    >
+      <CaretRight v-if="!isLoading"></CaretRight>
+      <Refresh v-else></Refresh>
     </xd-icon>
     <span> {{ node.label }}</span>
   </div>
