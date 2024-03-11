@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { TreeNode, TreeOptions, treeProps, BaseType } from './tree';
+import createNamespace from '@lxd/utils/createBEM';
+import XdTreeNode from './treeNode.vue';
 
 defineOptions({
   name: 'xd-tree',
 });
 
+const bem = createNamespace('tree');
 const props = defineProps(treeProps);
 const tree = ref<TreeNode[]>([]);
 
@@ -79,7 +82,7 @@ const flattenTree = computed(() => {
   const result: TreeNode[] = [];
   while (stack.length) {
     const node: TreeNode = stack.pop()!;
-    if (!node) continue;
+    // if (!node) continue;
     result.push(node);
     if (expandedKeys.has(node.key)) {
       const children: TreeNode[] = node.children;
@@ -92,11 +95,16 @@ const flattenTree = computed(() => {
   }
   return result;
 });
-console.log(flattenTree.value);
 </script>
 
 <template>
-  <div>tree</div>
+  <div :class="bem.b()">
+    <xd-tree-node
+      v-for="node in flattenTree"
+      :key="node.key"
+      :node="node"
+    ></xd-tree-node>
+  </div>
 </template>
 
 <style></style>
