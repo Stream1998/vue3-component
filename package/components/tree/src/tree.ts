@@ -67,10 +67,3 @@ export const treeNodeEmits = {
 };
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>;
 export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>;
-
-// export interface TreeContext {
-//   slots: SetupContext['slots'];
-//   // emit: SetupContext<typeof treeEmits>['emit'];
-// }
-
-// export const treeInjectKey: InjectionKey<TreeContext> = Symbol();

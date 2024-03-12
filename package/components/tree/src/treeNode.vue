@@ -17,8 +17,6 @@ function handleSelect(node: TreeNode) {
   if (node.disabled) return;
   emit('select', node);
 }
-
-// const treeContext = inject(treeInjectKey);
 </script>
 
 <template>

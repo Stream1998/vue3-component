@@ -3,6 +3,7 @@ import { ref, watch, computed } from 'vue';
 import { TreeNode, TreeOptions, treeProps, BaseType, treeEmits } from './tree';
 import createNamespace from '@lxd/utils/createBEM';
 import XdTreeNode from './treeNode.vue';
+import XdVirtualList from '@lxd/components/virtualList';
 
 defineOptions({
   name: 'xd-tree',
@@ -182,30 +183,27 @@ function handleSelect(node: TreeNode) {
 function isSelected(node: TreeNode): boolean {
   return selectedKeys.value.includes(node.key);
 }
-
-// 将当前插槽注入到树节点
-// const slots = useSlots();
-// provide(treeInjectKey, {
-//   slots,
-// });
 </script>
 
 <template>
   <div :class="bem.b()">
-    <xd-tree-node
-      v-for="node in flattenTree"
-      :key="node.key"
-      :node="node"
-      :is-expand="isExpand(node)"
-      :is-loading="isLoading(node)"
-      :is-selected="isSelected(node)"
-      @toggle="toggle"
-      @select="handleSelect"
-    >
-      <template #label="{ node: n }">
-        <slot name="label" :node="n"></slot>
+    <xd-virtual-list :items="flattenTree" :count="8" :size="32">
+      <template #default="{ node }">
+        <xd-tree-node
+          :key="node.key"
+          :node="node"
+          :is-expand="isExpand(node)"
+          :is-loading="isLoading(node)"
+          :is-selected="isSelected(node)"
+          @toggle="toggle"
+          @select="handleSelect"
+        >
+          <template #label="{ node: n }">
+            <slot name="label" :node="n"></slot>
+          </template>
+        </xd-tree-node>
       </template>
-    </xd-tree-node>
+    </xd-virtual-list>
   </div>
 </template>
 
