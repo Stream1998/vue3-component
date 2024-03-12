@@ -107,6 +107,76 @@ export default defineConfig({
 });
 ```
 
+## 多层组件嵌套,传递插槽
+
+### 每个层级都写一遍插槽(间接传递)
+
+使用页面
+
+```html
+<your-component>
+  <template #header="{content}">{content.title}</template>
+</your-component>
+```
+
+中间组件
+
+```html
+<middle-component>
+  <template #header="{content}">
+    <slot name="header" :content="content"></slot>
+  </template>
+</middle-component>
+```
+
+底层组件
+
+```html
+<bottom-component>
+  <slot name="header" :content="content"></slot>
+</bottom-component>
+```
+
+### provide/inject
+
+类型声明
+
+```ts
+export interface TreeContext {
+  slots: SetupContext['slots'];
+}
+export const treeInjectKey: InjectionKey<TreeContext> = Symbol();
+```
+
+在父组件使用 `provide`
+
+```ts
+provide(treeInjectKey, {
+  slots: useSlots(),
+});
+```
+
+在子组件使用 `inject`
+
+```vue
+<script setup land="ts">
+const treeContext = inject(treeInjectKey);
+</script>
+<template>
+  <div>{{ treeContext.slots.default(node) }}</div>
+</template>
+```
+
+页面使用
+
+```vue
+<template>
+  <tree>
+    <template #default="{ node }">{{ node.label }}</template>
+  </tree>
+</template>
+```
+
 ## 文档
 
 使用 `vitepress` 创建文档

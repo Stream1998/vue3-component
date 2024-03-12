@@ -17,6 +17,8 @@ function handleSelect(node: TreeNode) {
   if (node.disabled) return;
   emit('select', node);
 }
+
+// const treeContext = inject(treeInjectKey);
 </script>
 
 <template>
@@ -43,7 +45,7 @@ function handleSelect(node: TreeNode) {
       <Refresh v-else></Refresh>
     </xd-icon>
     <span>
-      {{ node.label }}
+      <slot name="label" :node="node">{{ node.label }}</slot>
     </span>
   </div>
 </template>

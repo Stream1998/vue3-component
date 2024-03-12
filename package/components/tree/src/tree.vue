@@ -70,7 +70,6 @@ watch(
   () => props.data,
   (data: TreeOptions[]) => {
     tree.value = createTree(data);
-    console.log(tree.value);
   },
   {
     immediate: true,
@@ -183,6 +182,12 @@ function handleSelect(node: TreeNode) {
 function isSelected(node: TreeNode): boolean {
   return selectedKeys.value.includes(node.key);
 }
+
+// 将当前插槽注入到树节点
+// const slots = useSlots();
+// provide(treeInjectKey, {
+//   slots,
+// });
 </script>
 
 <template>
@@ -196,7 +201,11 @@ function isSelected(node: TreeNode): boolean {
       :is-selected="isSelected(node)"
       @toggle="toggle"
       @select="handleSelect"
-    ></xd-tree-node>
+    >
+      <template #label="{ node: n }">
+        <slot name="label" :node="n"></slot>
+      </template>
+    </xd-tree-node>
   </div>
 </template>
 
