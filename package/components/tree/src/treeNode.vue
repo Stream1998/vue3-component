@@ -9,17 +9,23 @@ defineProps(treeNodeProps);
 const emit = defineEmits(treeNodeEmits);
 
 function handleExpand(node: TreeNode) {
+  if (node.disabled) return;
   emit('toggle', node);
 }
 
 function handleSelect(node: TreeNode) {
+  if (node.disabled) return;
   emit('select', node);
 }
 </script>
 
 <template>
   <div
-    :class="[bem.b(), bem.is('selected', isSelected)]"
+    :class="[
+      bem.b(),
+      bem.is('selected', isSelected),
+      bem.is('disabled', node.disabled),
+    ]"
     :style="{ 'padding-left': node.level * 16 + 'px' }"
     @click="handleSelect(node)"
   >
@@ -36,7 +42,9 @@ function handleSelect(node: TreeNode) {
       <CaretRight v-if="!isLoading"></CaretRight>
       <Refresh v-else></Refresh>
     </xd-icon>
-    <span> {{ node.label }}</span>
+    <span>
+      {{ node.label }}
+    </span>
   </div>
 </template>
 <style scoped></style>

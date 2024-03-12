@@ -21,6 +21,10 @@
   @include when(selected) {
     background-color: rgb(202, 106, 240);
   }
+  @include when(disabled) {
+    cursor: not-allowed;
+    background-color: #ccc;
+  }
   @include e('expand-icon') {
     cursor: pointer;
     transform: rotate(0deg);

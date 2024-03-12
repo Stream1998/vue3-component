@@ -55,6 +55,7 @@ function createTree(
         raw: node,
         level: parent ? parent.level + 1 : 0,
         isLeaf: node.isLeaf ?? children?.length == 0,
+        disabled: !!node.disabled,
       };
       if (children.length) {
         treeNode.children = traverse(children, treeNode);
@@ -149,7 +150,7 @@ function isLoading(node: TreeNode) {
   return loadingKeysSet.value.has(node.key);
 }
 
-const emits = defineEmits(treeEmits);
+const emit = defineEmits(treeEmits);
 
 const selectedKeys = ref<BaseType[]>([]);
 
@@ -176,7 +177,7 @@ function handleSelect(node: TreeNode) {
   } else {
     _selectedKeys = [node.key];
   }
-  emits('update:defaultSelectedKeys', _selectedKeys);
+  emit('update:defaultSelectedKeys', _selectedKeys);
 }
 
 function isSelected(node: TreeNode): boolean {

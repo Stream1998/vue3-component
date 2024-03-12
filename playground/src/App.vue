@@ -23,7 +23,7 @@ import { TreeOptions, TreeNode, BaseType } from '@lxd/components/tree';
 // }
 
 // 异步加载
-function createData() {
+function createData(): TreeOptions[] {
   return [
     {
       label: createLabel(0),
@@ -34,6 +34,7 @@ function createData() {
       label: createLabel(0),
       key: '1',
       isLeaf: false,
+      disabled: true,
     },
   ];
 }
@@ -73,7 +74,8 @@ const selectKeys = ref<BaseType[]>(['0']);
     :on-load="onLoad"
     selectable
     multiple
-  ></xd-tree>
+  >
+  </xd-tree>
 </template>
 
 <style scoped></style>

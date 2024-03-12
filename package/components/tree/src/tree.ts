@@ -7,6 +7,7 @@ export interface TreeOptions {
   key?: BaseType;
   children?: TreeOptions[];
   isLeaf?: boolean;
+  disabled?: boolean;
   [key: string]: unknown;
 }
 
