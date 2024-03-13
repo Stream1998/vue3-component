@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { TreeNode, TreeOptions, treeProps, BaseType, treeEmits } from './tree';
 import createNamespace from '@lxd/utils/createBEM';
 import XdTreeNode from './treeNode.vue';
@@ -57,6 +57,7 @@ function createTree(
         level: parent ? parent.level + 1 : 0,
         isLeaf: node.isLeaf ?? children?.length == 0,
         disabled: !!node.disabled,
+        parentKey: parent?.key,
       };
       if (children.length) {
         treeNode.children = traverse(children, treeNode);
@@ -183,20 +184,106 @@ function handleSelect(node: TreeNode) {
 function isSelected(node: TreeNode): boolean {
   return selectedKeys.value.includes(node.key);
 }
+
+const checkedKeysSet = ref<Set<BaseType>>(new Set(props.defaultCheckedKeys));
+
+function toggleCheck(node: TreeNode, state: boolean) {
+  if (!node) return;
+  state && indeterminateKeys.value.delete(node.key);
+  checkedKeysSet.value[state ? 'add' : 'delete'](node.key);
+  const children = node.children;
+  if (children) {
+    children.forEach(child => {
+      if (!child.disabled) {
+        toggleCheck(child, state);
+      }
+    });
+  }
+}
+
+function handleCheck(node: TreeNode, state: boolean) {
+  toggleCheck(node, state);
+  updateIndeterminate(node);
+  emit('update:defaultCheckedKeys', Array.from(checkedKeysSet.value));
+}
+
+function isChecked(node: TreeNode) {
+  return checkedKeysSet.value.has(node.key);
+}
+
+const indeterminateKeys = ref<Set<BaseType>>(new Set());
+
+function findNode(key: BaseType) {
+  return flattenTree.value.find((node: TreeNode) => node.key === key);
+}
+function updateIndeterminate(node: TreeNode) {
+  const parent = node.parentKey && findNode(node.parentKey);
+  if (!parent) return;
+  const children = parent.children;
+  if (children) {
+    let allChecked = true;
+    let hasChecked = false;
+    for (const child of children) {
+      if (isChecked(child)) {
+        // 子节点为选中状态
+        hasChecked = true;
+      } else if (isIndeterminate(child)) {
+        // 子节点为半选状态
+        allChecked = false;
+        hasChecked = true;
+      } else {
+        // 子节点未选中
+        allChecked = false;
+      }
+    }
+    if (allChecked) {
+      // 子节点都为选中状态
+      indeterminateKeys.value.delete(parent.key);
+      checkedKeysSet.value.add(parent.key);
+    } else if (hasChecked) {
+      // 存在一个子节点选中
+      indeterminateKeys.value.add(parent.key);
+      checkedKeysSet.value.delete(parent.key);
+    } else {
+      // 子节点都为未选状态
+      indeterminateKeys.value.delete(parent.key);
+      checkedKeysSet.value.delete(parent.key);
+    }
+  }
+  updateIndeterminate(parent);
+}
+
+function isIndeterminate(node: TreeNode) {
+  // if (isChecked(node)) return false;
+  return indeterminateKeys.value.has(node.key);
+}
+
+onMounted(() => {
+  props.showCheckbox &&
+    checkedKeysSet.value.forEach((key: BaseType) => {
+      const node = findNode(key);
+      node && toggleCheck(node, true);
+    });
+});
 </script>
 
 <template>
   <div :class="bem.b()">
+    {{ checkedKeysSet }}
     <xd-virtual-list :items="flattenTree" :count="8" :size="32">
       <template #default="{ node }">
         <xd-tree-node
           :key="node.key"
           :node="node"
+          :show-checkbox="showCheckbox"
           :is-expand="isExpand(node)"
           :is-loading="isLoading(node)"
           :is-selected="isSelected(node)"
+          :is-checked="isChecked(node)"
+          :is-indeterminate="isIndeterminate(node)"
           @toggle="toggle"
           @select="handleSelect"
+          @check="handleCheck"
         >
           <template #label="{ node: n }">
             <slot name="label" :node="n"></slot>

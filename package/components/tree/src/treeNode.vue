@@ -5,7 +5,7 @@ import CaretRight from '@lxd/icons/src/CaretRight';
 import Refresh from '@lxd/icons/src/Refresh';
 
 const bem = createNamespace('tree-node');
-defineProps(treeNodeProps);
+const props = defineProps(treeNodeProps);
 const emit = defineEmits(treeNodeEmits);
 
 function handleExpand(node: TreeNode) {
@@ -16,6 +16,10 @@ function handleExpand(node: TreeNode) {
 function handleSelect(node: TreeNode) {
   if (node.disabled) return;
   emit('select', node);
+}
+
+function handleCheck(state: boolean) {
+  emit('check', props.node, state);
 }
 </script>
 
@@ -43,6 +47,14 @@ function handleSelect(node: TreeNode) {
       <Refresh v-else></Refresh>
     </xd-icon>
     <span>
+      <xd-checkbox
+        v-if="showCheckbox"
+        :model-value="isChecked"
+        :indeterminate="isIndeterminate"
+        :disabled="node.disabled"
+        @update:model-value="handleCheck"
+      >
+      </xd-checkbox>
       <slot name="label" :node="node">{{ node.label }}</slot>
     </span>
   </div>

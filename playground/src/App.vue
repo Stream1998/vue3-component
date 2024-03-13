@@ -5,7 +5,7 @@ import { ref } from 'vue';
 function createData(level = 4, baseKey = ''): any {
   if (!level) return undefined;
   const repeat = (num: number, token: unknown) => new Array(num).fill(token);
-  return repeat(20 - level, undefined).map((_, index) => {
+  return repeat(5 - level, undefined).map((_, index) => {
     const key = '' + baseKey + level + index;
     return {
       label: createLabel(level),
@@ -64,15 +64,16 @@ function createLabel(level: number): string {
 const data = ref(createData());
 
 // const selectKeys = ref<BaseType[]>(['0']);
-const checkState = ref(true);
+const checkedKeys = ref<BaseType[]>(['40']);
 </script>
 
 <template>
   <div>
-    <xd-checkbox v-model="checkState" :indeterminate="true">
-      {{ checkState }}
-    </xd-checkbox>
-    <xd-tree :data="data">
+    <xd-tree
+      v-model:default-checked-keys="checkedKeys"
+      :data="data"
+      :show-checkbox="true"
+    >
       <template #label="{ node }"> {{ node.key }} - {{ node.label }} </template>
     </xd-tree>
   </div>

@@ -15,6 +15,7 @@ export interface TreeNode extends Required<TreeOptions> {
   level: number;
   raw: TreeOptions;
   children: TreeNode[];
+  parentKey: BaseType | undefined;
 }
 
 export const treeProps = {
@@ -42,6 +43,11 @@ export const treeProps = {
     type: Array as PropType<BaseType[]>,
     default: () => [],
   },
+  defaultCheckedKeys: {
+    type: Array as PropType<BaseType[]>,
+    default: () => [],
+  },
+  showCheckbox: Boolean,
   selectable: Boolean,
   multiple: Boolean,
   onLoad: Function as PropType<(node: TreeNode) => Promise<TreeOptions[]>>,
@@ -49,6 +55,7 @@ export const treeProps = {
 
 export const treeEmits = {
   'update:defaultSelectedKeys': (keys: BaseType[]) => keys,
+  'update:defaultCheckedKeys': (keys: BaseType[]) => keys,
 };
 
 export const treeNodeProps = {
@@ -56,14 +63,18 @@ export const treeNodeProps = {
     type: Object as PropType<TreeNode>,
     required: true,
   },
+  showCheckbox: Boolean,
   isExpand: Boolean,
   isLoading: Boolean,
   isSelected: Boolean,
+  isChecked: Boolean,
+  isIndeterminate: Boolean,
 } as const;
 
 export const treeNodeEmits = {
   toggle: (node: TreeNode) => node,
   select: (node: TreeNode) => node,
+  check: (node: TreeNode, state: boolean) => typeof state === 'boolean',
 };
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>;
 export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>;

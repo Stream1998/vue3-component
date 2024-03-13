@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { checkboxEmits, checkboxProps } from './checkbox';
 defineOptions({
   name: 'xd-checkbox',
@@ -21,9 +21,12 @@ function updateIndeterminate(state: boolean) {
   inputRef.value!.indeterminate = state;
 }
 
-onMounted(() => {
-  updateIndeterminate(props.indeterminate);
-});
+watch(
+  () => props.indeterminate,
+  state => {
+    updateIndeterminate(state);
+  }
+);
 </script>
 <template>
   <label>
