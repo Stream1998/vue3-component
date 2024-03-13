@@ -64,10 +64,14 @@ function createLabel(level: number): string {
 const data = ref(createData());
 
 // const selectKeys = ref<BaseType[]>(['0']);
+const checkState = ref(true);
 </script>
 
 <template>
   <div>
+    <xd-checkbox v-model="checkState" :indeterminate="true">
+      {{ checkState }}
+    </xd-checkbox>
     <xd-tree :data="data">
       <template #label="{ node }"> {{ node.key }} - {{ node.label }} </template>
     </xd-tree>
