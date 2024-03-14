@@ -1,7 +1,7 @@
 import { ExtractPropTypes, PropType } from 'vue';
 
 export type Size = 'small' | 'middle' | 'large';
-export type Type = 'primary' | 'danger' | 'info' | 'success' | 'warning' | '';
+export type Type = 'primary' | 'danger' | 'info' | 'success' | 'warning';
 export type Placement = 'left' | 'right';
 export type NativeType = 'button' | 'submit' | 'reset';
 
@@ -15,9 +15,9 @@ export const buttonProps = {
     validate(value) {
       return ['primary', 'danger', 'info', 'success', 'warning'].includes(value)
         ? value
-        : '';
+        : 'info';
     },
-    default: '',
+    default: 'info',
   },
   placement: {
     type: String as PropType<Placement>,
@@ -29,7 +29,7 @@ export const buttonProps = {
   },
   loading: Boolean,
   disabled: Boolean,
-};
+} as const;
 
 export type ButtonProps = Partial<ExtractPropTypes<typeof buttonProps>>;
 

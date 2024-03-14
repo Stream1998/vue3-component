@@ -1,0 +1,25 @@
+@use './config/mixins.scss' as *;
+input[type='password' i]::-ms-reveal {
+  display: none !important;
+}
+@include b(input) {
+  @include e(group) {
+    display: inline-flex;
+    align-items: center;
+  }
+  @include e(wrapper) {
+    position: relative;
+    width: 240px;
+    height: 32px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  @include e(inner) {
+    display: inline-flex;
+    height: 30px;
+    border: none;
+    outline: none;
+    appearance: none;
+    flex: 1;
+  }
+}
