@@ -1,0 +1,48 @@
+@use './config/mixins.scss' as *;
+@use './config/variable.scss' as *;
+
+@include b(button) {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  border: none;
+  outline: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+
+  @include e(small) {
+    padding: 5px 16px;
+  }
+
+  @include e(middle) {
+    padding: 5px 18px;
+  }
+
+  @include e(large) {
+    padding: 5px 20px;
+  }
+
+  @for $i from 1 through length($color-name-list) {
+    @include e(nth($color-name-list, $i)) {
+      background-color: nth($color-list, $i);
+    }
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  @include when(loading) {
+    &:hover,
+    &:focus {
+      cursor: not-allowed;
+    }
+  }
+  @include when(disabled) {
+    &:hover,
+    &:focus {
+      cursor: not-allowed;
+    }
+  }
+}

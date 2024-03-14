@@ -1,4 +1,16 @@
+// bem
 $namespace: 'xd';
 $element-separator: '__';
 $modifier-separator: '--';
 $state-prefix: 'is-';
+
+// color
+$primary-color: #409eff;
+$success-color: #67c23a;
+$warning-color: #e6a23c;
+$danger-color: #f56c6c;
+$info-color: #909399;
+
+$color-name-list: primary, success, warning, danger, info;
+$color-list: $primary-color, $success-color, $warning-color, $danger-color,
+  $info-color;

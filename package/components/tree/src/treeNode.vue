@@ -2,7 +2,7 @@
 import createNamespace from '@lxd/utils/createBEM';
 import { treeNodeProps, treeNodeEmits, TreeNode } from './tree';
 import CaretRight from '@lxd/icons/src/CaretRight';
-import Refresh from '@lxd/icons/src/Refresh';
+import Loading from '@lxd/icons/src/Loading';
 
 const bem = createNamespace('tree-node');
 const props = defineProps(treeNodeProps);
@@ -44,7 +44,7 @@ function handleCheck(state: boolean) {
       @click.stop="handleExpand(node)"
     >
       <CaretRight v-if="!isLoading"></CaretRight>
-      <Refresh v-else></Refresh>
+      <Loading v-else></Loading>
     </xd-icon>
     <span>
       <xd-checkbox

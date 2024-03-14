@@ -269,7 +269,6 @@ onMounted(() => {
 
 <template>
   <div :class="bem.b()">
-    {{ checkedKeysSet }}
     <xd-virtual-list :items="flattenTree" :count="8" :size="32">
       <template #default="{ node }">
         <xd-tree-node
