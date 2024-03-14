@@ -1,0 +1,9 @@
+@use './config/mixins.scss' as *;
+
+@include b(checkbox) {
+  user-select: none;
+  cursor: pointer;
+  @include when(disabled) {
+    cursor: not-allowed;
+  }
+}

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { checkboxEmits, checkboxProps } from './checkbox';
+import createNamespace from '@lxd/utils/createBEM';
 defineOptions({
   name: 'xd-checkbox',
 });
 const props = defineProps(checkboxProps);
 const emit = defineEmits(checkboxEmits);
+const bem = createNamespace('checkbox');
 const value = computed({
   get() {
     return props.modelValue;
@@ -29,7 +31,7 @@ watch(
 );
 </script>
 <template>
-  <label>
+  <label :class="[bem.b(), bem.is('disabled', disabled)]">
     <input
       ref="inputRef"
       v-model="value"
