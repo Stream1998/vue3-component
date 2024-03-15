@@ -4,14 +4,19 @@ import treeView from './views/tree.vue';
 import checkbox from './views/checkbox.vue';
 import buttonView from './views/button.vue';
 import inputView from './views/input.vue';
+import formView from './views/form.vue';
+import { computed } from 'vue';
 
-const list = [
-  { name: 'icon', component: iconView },
-  { name: 'tree', component: treeView },
-  { name: 'checkbox', component: checkbox },
-  { name: 'button', component: buttonView },
-  { name: 'input', component: inputView },
+const components = [
+  { name: 'icon', component: iconView, show: true },
+  { name: 'tree', component: treeView, show: true },
+  { name: 'checkbox', component: checkbox, show: true },
+  { name: 'button', component: buttonView, show: true },
+  { name: 'input', component: inputView, show: true },
+  { name: 'form', component: formView, show: true },
 ];
+
+const list = computed(() => components.filter(component => component.show));
 </script>
 
 <template>

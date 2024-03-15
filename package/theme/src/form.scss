@@ -1,0 +1,27 @@
+@use './config/mixins.scss' as *;
+@use './config/variable.scss' as *;
+
+@include b(form) {
+}
+@include b('form-item') {
+  display: flex;
+  margin-bottom: 18px;
+  label {
+    margin-right: 12px;
+    height: 32px;
+    line-height: 32px;
+    &:empty {
+      display: none;
+    }
+  }
+  @include e(content) {
+    position: relative;
+  }
+  @include e(error) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: $danger-color;
+    font-size: 12px;
+  }
+}

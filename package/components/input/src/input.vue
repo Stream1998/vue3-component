@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, useSlots, computed, nextTick } from 'vue';
+import {
+  ref,
+  onMounted,
+  watch,
+  useSlots,
+  computed,
+  nextTick,
+  inject,
+} from 'vue';
 import { inputEmits, inputProps } from './input';
 import createNamespace from '@lxd/utils/createBEM';
 import Eye from '@lxd/icons/src/Eye';
 import EyeClosed from '@lxd/icons/src/EyeClosed';
 import Clear from '@lxd/icons/src/Clear';
+import { FormItemInjectKey } from '../../form';
 
 defineOptions({
   name: 'xd-input',
@@ -14,6 +23,7 @@ const props = defineProps(inputProps);
 const emit = defineEmits(inputEmits);
 const slots = useSlots();
 const bem = createNamespace('input');
+const formItemContext = inject(FormItemInjectKey);
 
 const input = ref<HTMLInputElement>();
 
@@ -25,6 +35,8 @@ watch(
       passwordVisiable.value = false;
     }
     updateModelValue(value);
+    // 阻止报错，将错误上报到父组件
+    formItemContext?.validate('change').catch(() => {});
   }
 );
 
@@ -81,6 +93,8 @@ function handleFocus(e: FocusEvent) {
 }
 
 function handleBlur(e: Event) {
+  // 阻止报错，将错误上报到父组件
+  formItemContext?.validate('blur').catch(() => {});
   emit('blur', e);
 }
 </script>
@@ -98,7 +112,9 @@ function handleBlur(e: Event) {
           ref="input"
           :class="bem.e('inner')"
           :value="modelValue"
-          :type="passwordVisiable ? 'text' : 'password'"
+          :type="
+            type === 'text' ? 'text' : passwordVisiable ? 'text' : 'password'
+          "
           :placeholder="placeholder"
           :disabled="disabled"
           :readonly="readonly"

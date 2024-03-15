@@ -5,11 +5,31 @@ import XdVirtualList from './virtualList';
 import XdCheckbox from './checkbox';
 import XdButton from './button';
 import XdInput from './input';
+import { Form as XdForm, FormItem as XdFormItem } from './form';
 
 export * from './icon';
 export * from './tree';
 export * from './checkbox';
 export * from './virtualList';
+export * from './button';
+export * from './form';
 
-export { XdVirtualList, XdIcon, XdTree, XdCheckbox, XdButton, XdInput };
-export default { XdIcon, XdTree, XdCheckbox, XdButton, XdInput };
+export {
+  XdVirtualList,
+  XdIcon,
+  XdTree,
+  XdCheckbox,
+  XdButton,
+  XdInput,
+  XdForm,
+  XdFormItem,
+};
+export default {
+  XdIcon,
+  XdTree,
+  XdCheckbox,
+  XdButton,
+  XdInput,
+  XdForm,
+  XdFormItem,
+};
