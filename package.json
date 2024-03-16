@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -C playground dev",
+    "server:dev": "pnpm -C server start",
     "docs:dev": "pnpm -C docs dev"
   },
   "keywords": [],
