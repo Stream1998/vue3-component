@@ -40,7 +40,10 @@ export const uploadProps = {
     type: String,
     default: 'file',
   },
-  showFileList: Boolean,
+  showFileList: {
+    type: Boolean,
+    default: true,
+  },
   fileList: {
     type: Array as PropType<UploadFile[]>,
     default: () => [],

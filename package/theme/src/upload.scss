@@ -1,7 +1,43 @@
 @use './config/mixins.scss' as *;
+@use './config/variable.scss' as *;
 
 @include b(upload) {
   @include e(inner) {
     display: none;
+  }
+  @include e(file-list) {
+    &:empty {
+      display: none;
+    }
+    margin-top: 12px;
+    border: 1px solid;
+  }
+  @include e(file) {
+    display: flex;
+    justify-content: space-between;
+    & + & {
+      border-top: 1px solid;
+    }
+  }
+  @include e(name) {
+    &:hover {
+      text-decoration: underline;
+    }
+    color: $primary-color;
+    cursor: pointer;
+  }
+  @include e(operate) {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  @include e(icon) {
+    cursor: pointer;
+    @include m(primary) {
+      color: $primary-color;
+    }
+    @include m(danger) {
+      color: $danger-color;
+    }
   }
 }

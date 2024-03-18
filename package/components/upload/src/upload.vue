@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useSlots, watch } from 'vue';
 import { UploadFile, UploadRawFile, uploadEmits, uploadProps } from './upload';
 import createNamespace from '@lxd/utils/createBEM';
 import httpRequest, { UploadOptions } from './httpRequest';
+import { Clear, Loading } from '@lxd/icons/src';
 
 defineOptions({
   name: 'xd-upload',
@@ -34,16 +35,13 @@ function findFile(uid: string) {
 
 async function handleRemove(uid: string) {
   const index = findFile(uid);
-  const isRemove = await props.beforeRemove(
-    fileList.value[index],
-    fileList.value,
-  );
-  isRemove && fileList.value.splice(index, 1);
+  const file = { ...fileList.value[index] };
+  const isRemove = await props.beforeRemove(file, fileList.value);
+  if (isRemove) {
+    props.onRemove(file, fileList.value);
+    fileList.value.splice(index, 1);
+  }
 }
-
-defineExpose({
-  remove: handleRemove,
-});
 
 async function upload(rawFile: UploadRawFile) {
   const result = await props.beforeUpload(rawFile);
@@ -124,6 +122,8 @@ const dragEvent = computed(() =>
       }
     : {},
 );
+
+const slots = useSlots();
 </script>
 <template>
   <div :class="bem.b()">
@@ -138,6 +138,35 @@ const dragEvent = computed(() =>
         @change="handleChange"
       />
     </div>
+    <template v-if="showFileList">
+      <div :class="!slots.file ? bem.e('file-list') : ''">
+        <template v-for="file in fileList" :key="file.uid">
+          <slot name="file" :data="file">
+            <div :class="bem.e('file')">
+              <span :class="bem.e('name')" @click="onPreview(file)">
+                {{ file.name }}
+              </span>
+              <span>{{ file.size }}</span>
+              <div v-if="file.percentage < 100" :class="bem.b('operate')">
+                <xd-icon :class="bem.em('icon', 'primary')">
+                  <Loading state></Loading>
+                </xd-icon>
+                <span>
+                  {{ file.percentage.toFixed(0) + '%' }}
+                </span>
+              </div>
+              <xd-icon
+                v-else
+                :class="bem.em('icon', 'danger')"
+                @click.stop="handleRemove(file.uid)"
+              >
+                <Clear></Clear>
+              </xd-icon>
+            </div>
+          </slot>
+        </template>
+      </div>
+    </template>
   </div>
 </template>
 <style scoped></style>
