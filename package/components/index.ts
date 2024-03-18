@@ -7,6 +7,7 @@ import XdButton from './button';
 import XdInput from './input';
 import { Form as XdForm, FormItem as XdFormItem } from './form';
 import XdUpload from './upload';
+import XdCalendar from './calendar';
 
 export * from './icon';
 export * from './tree';
@@ -26,6 +27,7 @@ export {
   XdForm,
   XdFormItem,
   XdUpload,
+  XdCalendar,
 };
 export default {
   XdIcon,
@@ -36,4 +38,5 @@ export default {
   XdForm,
   XdFormItem,
   XdUpload,
+  XdCalendar,
 };

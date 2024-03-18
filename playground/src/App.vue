@@ -6,6 +6,7 @@ import buttonView from './views/button.vue';
 import inputView from './views/input.vue';
 import formView from './views/form.vue';
 import uploadView from './views/upload.vue';
+import calendarView from './views/calendar.vue';
 import { computed } from 'vue';
 
 const components = [
@@ -15,7 +16,8 @@ const components = [
   { name: 'button', component: buttonView, show: false },
   { name: 'input', component: inputView, show: false },
   { name: 'form', component: formView, show: false },
-  { name: 'upload', component: uploadView, show: true },
+  { name: 'upload', component: uploadView, show: false },
+  { name: 'calendar', component: calendarView, show: true },
 ];
 
 const list = computed(() => components.filter(component => component.show));

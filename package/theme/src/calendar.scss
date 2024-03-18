@@ -1,0 +1,54 @@
+@use './config/mixins.scss' as *;
+@use './config/variable.scss' as *;
+
+@include b(calendar) {
+  @include e(header) {
+    display: flex;
+    justify-content: space-between;
+    @include m(date) {
+    }
+    @include m(operate) {
+      display: flex;
+      gap: 12px;
+    }
+  }
+  @include e(week-name) {
+    display: flex;
+    margin: 12px 0;
+    > div {
+      flex: 1;
+      text-align: center;
+    }
+  }
+  @include e(table) {
+    border: 1px solid $info-color;
+  }
+  @include e(week) {
+    display: flex;
+    & + & {
+      border-top: 1px solid $info-color;
+    }
+  }
+
+  @include e(day) {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    color: #ccc;
+    cursor: pointer;
+    &:hover {
+      color: $primary-color !important;
+    }
+    & + & {
+      border-left: 1px solid $info-color;
+    }
+
+    @include when(current) {
+      color: #333;
+    }
+    @include when(today) {
+      color: $primary-color;
+      background-color: rgba($color: $primary-color, $alpha: 0.2);
+    }
+  }
+}
