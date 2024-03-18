@@ -5,15 +5,17 @@ import checkbox from './views/checkbox.vue';
 import buttonView from './views/button.vue';
 import inputView from './views/input.vue';
 import formView from './views/form.vue';
+import uploadView from './views/upload.vue';
 import { computed } from 'vue';
 
 const components = [
-  { name: 'icon', component: iconView, show: true },
-  { name: 'tree', component: treeView, show: true },
-  { name: 'checkbox', component: checkbox, show: true },
-  { name: 'button', component: buttonView, show: true },
-  { name: 'input', component: inputView, show: true },
-  { name: 'form', component: formView, show: true },
+  { name: 'icon', component: iconView, show: false },
+  { name: 'tree', component: treeView, show: false },
+  { name: 'checkbox', component: checkbox, show: false },
+  { name: 'button', component: buttonView, show: false },
+  { name: 'input', component: inputView, show: false },
+  { name: 'form', component: formView, show: false },
+  { name: 'upload', component: uploadView, show: true },
 ];
 
 const list = computed(() => components.filter(component => component.show));

@@ -6,6 +6,7 @@ import XdCheckbox from './checkbox';
 import XdButton from './button';
 import XdInput from './input';
 import { Form as XdForm, FormItem as XdFormItem } from './form';
+import XdUpload from './upload';
 
 export * from './icon';
 export * from './tree';
@@ -13,6 +14,7 @@ export * from './checkbox';
 export * from './virtualList';
 export * from './button';
 export * from './form';
+export * from './upload';
 
 export {
   XdVirtualList,
@@ -23,6 +25,7 @@ export {
   XdInput,
   XdForm,
   XdFormItem,
+  XdUpload,
 };
 export default {
   XdIcon,
@@ -32,4 +35,5 @@ export default {
   XdInput,
   XdForm,
   XdFormItem,
+  XdUpload,
 };

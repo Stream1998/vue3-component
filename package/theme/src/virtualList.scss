@@ -2,7 +2,7 @@
 
 @include b('virtual-list') {
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
   border: 1px solid #ccc;
   @include e('scroll-bar') {
     position: absolute;

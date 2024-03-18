@@ -1,0 +1,7 @@
+@use './config/mixins.scss' as *;
+
+@include b(upload) {
+  @include e(inner) {
+    display: none;
+  }
+}
