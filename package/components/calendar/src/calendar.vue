@@ -39,6 +39,21 @@ const weekNames = [
   '星期六',
 ];
 
+function isSameOrBefore(date, object: dayjs.Dayjs, scope: string) {
+  return date.isSame(object, scope) || date.isBefore(object, scope);
+}
+
+function isSameOrAfter(date, object: dayjs.Dayjs, scope: string) {
+  return date.isSame(object, scope) || date.isAfter(object, scope);
+}
+
+function isSameOrBeforeDay(date, object) {
+  return isSameOrBefore(date, object, 'day');
+}
+function isSameOrAfterDay(date, object) {
+  return isSameOrAfter(date, object, 'day');
+}
+
 const performDays = computed(() => {
   const firstDay = today.value.startOf('month');
   const lastDay = today.value.endOf('month');
@@ -55,32 +70,16 @@ const performDays = computed(() => {
   }));
   if (range.value.length === 2) {
     list.push(
-      ...prevMonthDays.filter(
-        v =>
-          range.value[0].isSame(v.date, 'day') ||
-          range.value[0].isBefore(v.date, 'day'),
-      ),
+      ...prevMonthDays.filter(v => isSameOrBeforeDay(range.value[0], v.date)),
       ...currentMonthDays
-        .filter(
-          v =>
-            range.value[0].isSame(v.date, 'day') ||
-            range.value[0].isBefore(v.date, 'day'),
-        )
-        .filter(
-          v =>
-            range.value[1].isSame(v.date, 'day') ||
-            range.value[1].isAfter(v.date, 'day'),
-        ),
+        .filter(v => isSameOrBeforeDay(range.value[0], v.date))
+        .filter(v => isSameOrAfterDay(range.value[1], v.date)),
     );
     const nextMonthDays = Array.from({ length: 7 - (list.length % 7) }).map(
       (_, i) => ({ date: lastDay.add(i + 1, 'day'), type: 'next' }),
     );
     list.push(
-      ...nextMonthDays.filter(
-        v =>
-          range.value[1].isSame(v.date, 'day') ||
-          range.value[1].isAfter(v.date, 'day'),
-      ),
+      ...nextMonthDays.filter(v => isSameOrAfterDay(range.value[1], v.date)),
     );
   } else {
     list.push(...prevMonthDays, ...currentMonthDays);
@@ -99,38 +98,18 @@ const performDays = computed(() => {
 });
 
 function isValid(date) {
-  if (range.value.length === 2) {
-    return (
-      (date.isSame(range.value[0], 'day') ||
-        date.isAfter(range.value[0], 'day')) &&
-      (date.isBefore(range.value[1], 'day') ||
-        date.isSame(range.value[1], 'day'))
-    );
-  }
-  return true;
+  return range.value.length === 2
+    ? isSameOrAfterDay(date, range.value[0]) &&
+        isSameOrBeforeDay(date, range.value[1])
+    : true;
 }
 
-function prevYear() {
-  const date = today.value.subtract(1, 'year');
+function changeToday(date: dayjs.Dayjs) {
   isValid(date) && (today.value = date);
 }
 
-function nextYear() {
-  const date = today.value.add(1, 'year');
-  isValid(date) && (today.value = date);
-}
-
-function prevMonth() {
-  const date = today.value.subtract(1, 'month');
-  isValid(date) && (today.value = date);
-}
-function nextMonth() {
-  const date = today.value.add(1, 'month');
-  isValid(date) && (today.value = date);
-}
-function backToday() {
-  const date = dayjs();
-  isValid(date) && (today.value = date);
+function getButtonType(date) {
+  return isValid(date) ? 'primary' : 'info';
 }
 
 watch(today, date => {
@@ -145,19 +124,34 @@ watch(today, date => {
           {{ today.format('YYYY-MM-DD') }}
         </span>
         <div :class="bem.em('header', 'operate')">
-          <xd-button type="primary" @click="prevYear">
+          <xd-button
+            :type="getButtonType(today.subtract(1, 'year'))"
+            @click="changeToday(today.subtract(1, 'year'))"
+          >
             <span>上一年</span>
           </xd-button>
-          <xd-button type="primary" @click="prevMonth">
+          <xd-button
+            :type="getButtonType(today.subtract(1, 'month'))"
+            @click="changeToday(today.subtract(1, 'month'))"
+          >
             <span>上一月</span>
           </xd-button>
-          <xd-button type="primary" @click="backToday">
+          <xd-button
+            :type="getButtonType(dayjs())"
+            @click="changeToday(dayjs())"
+          >
             <span>回到今天</span>
           </xd-button>
-          <xd-button type="primary" @click="nextMonth">
+          <xd-button
+            :type="getButtonType(today.add(1, 'month'))"
+            @click="changeToday(today.add(1, 'month'))"
+          >
             <span>下一月</span>
           </xd-button>
-          <xd-button type="primary" @click="nextYear">
+          <xd-button
+            :type="getButtonType(today.add(1, 'year'))"
+            @click="changeToday(today.add(1, 'year'))"
+          >
             <span>下一年</span>
           </xd-button>
         </div>
