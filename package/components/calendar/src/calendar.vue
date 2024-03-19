@@ -7,11 +7,27 @@ import { ref, computed, watch } from 'vue';
 defineOptions({
   name: 'xd-calendar',
 });
-defineProps(calendarProps);
+const props = defineProps(calendarProps);
 const emits = defineEmits(calendarEmits);
 const bem = createNamespace('calendar');
 
-const today = ref(dayjs());
+const today = ref(dayjs(props.modelValue));
+const range = computed(() => {
+  const result = props.range?.map(v => dayjs(v)) ?? [];
+  if (result.length === 2) {
+    const diff = result[1].diff(result[0], 'day') + 1;
+    if (result[0].isAfter(result[1])) {
+      throw new Error('起始时间不能大于结束时间');
+    } else if (diff > 42) {
+      throw new Error('时间间隔大于42天');
+    } else if (diff % 7 !== 0) {
+      throw new Error('时间间隔不是7的倍数');
+    }
+    return result;
+  } else {
+    return [];
+  }
+});
 
 const weekNames = [
   '星期日',
@@ -29,26 +45,93 @@ const performDays = computed(() => {
   const weekOfFirstDay = firstDay.day();
   const days = today.value.daysInMonth();
   const list: DateInfo[] = [];
-  const prevMonthDays = Array.from({ length: weekOfFirstDay }).map((v, i) => ({
+  const prevMonthDays = Array.from({ length: weekOfFirstDay }).map((_, i) => ({
     date: firstDay.subtract(weekOfFirstDay - i, 'day'),
     type: 'previous',
   }));
-  list.push(...prevMonthDays);
-  const currentMonthDays = Array.from({ length: days }).map((v, i) => ({
+  const currentMonthDays = Array.from({ length: days }).map((_, i) => ({
     date: firstDay.add(i, 'day'),
     type: 'current',
   }));
-  list.push(...currentMonthDays);
-  const nextMonthDays = Array.from({ length: 42 - list.length }).map((v, i) => {
-    return { date: lastDay.add(i + 1, 'day'), type: 'next' };
-  });
-  list.push(...nextMonthDays);
-  const result = Array.from({ length: 6 }).map((_, i) => {
-    const start = i * 7;
-    return list.slice(start, start + 7);
-  });
+  if (range.value.length === 2) {
+    list.push(
+      ...prevMonthDays.filter(
+        v =>
+          range.value[0].isSame(v.date, 'day') ||
+          range.value[0].isBefore(v.date, 'day'),
+      ),
+      ...currentMonthDays
+        .filter(
+          v =>
+            range.value[0].isSame(v.date, 'day') ||
+            range.value[0].isBefore(v.date, 'day'),
+        )
+        .filter(
+          v =>
+            range.value[1].isSame(v.date, 'day') ||
+            range.value[1].isAfter(v.date, 'day'),
+        ),
+    );
+    const nextMonthDays = Array.from({ length: 7 - (list.length % 7) }).map(
+      (_, i) => ({ date: lastDay.add(i + 1, 'day'), type: 'next' }),
+    );
+    list.push(
+      ...nextMonthDays.filter(
+        v =>
+          range.value[1].isSame(v.date, 'day') ||
+          range.value[1].isAfter(v.date, 'day'),
+      ),
+    );
+  } else {
+    list.push(...prevMonthDays, ...currentMonthDays);
+    const nextMonthDays = Array.from({ length: 7 - (list.length % 7) }).map(
+      (_, i) => ({ date: lastDay.add(i + 1, 'day'), type: 'next' }),
+    );
+    list.push(...nextMonthDays);
+  }
+  const result = Array.from({ length: Math.ceil(list.length / 7) }).map(
+    (_, i) => {
+      const start = i * 7;
+      return list.slice(start, start + 7);
+    },
+  );
   return result;
 });
+
+function isValid(date) {
+  if (range.value.length === 2) {
+    return (
+      (date.isSame(range.value[0], 'day') ||
+        date.isAfter(range.value[0], 'day')) &&
+      (date.isBefore(range.value[1], 'day') ||
+        date.isSame(range.value[1], 'day'))
+    );
+  }
+  return true;
+}
+
+function prevYear() {
+  const date = today.value.subtract(1, 'year');
+  isValid(date) && (today.value = date);
+}
+
+function nextYear() {
+  const date = today.value.add(1, 'year');
+  isValid(date) && (today.value = date);
+}
+
+function prevMonth() {
+  const date = today.value.subtract(1, 'month');
+  isValid(date) && (today.value = date);
+}
+function nextMonth() {
+  const date = today.value.add(1, 'month');
+  isValid(date) && (today.value = date);
+}
+function backToday() {
+  const date = dayjs();
+  isValid(date) && (today.value = date);
+}
 
 watch(today, date => {
   emits('update:modelValue', date.toDate());
@@ -62,19 +145,19 @@ watch(today, date => {
           {{ today.format('YYYY-MM-DD') }}
         </span>
         <div :class="bem.em('header', 'operate')">
-          <xd-button type="primary" @click="today = today.subtract(1, 'year')">
+          <xd-button type="primary" @click="prevYear">
             <span>上一年</span>
           </xd-button>
-          <xd-button type="primary" @click="today = today.subtract(1, 'month')">
+          <xd-button type="primary" @click="prevMonth">
             <span>上一月</span>
           </xd-button>
-          <xd-button type="primary" @click="today = dayjs()">
+          <xd-button type="primary" @click="backToday">
             <span>回到今天</span>
           </xd-button>
-          <xd-button type="primary" @click="today = today.add(1, 'month')">
+          <xd-button type="primary" @click="nextMonth">
             <span>下一月</span>
           </xd-button>
-          <xd-button type="primary" @click="today = today.add(1, 'year')">
+          <xd-button type="primary" @click="nextYear">
             <span>下一年</span>
           </xd-button>
         </div>
