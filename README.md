@@ -12,7 +12,7 @@ Vue3 组件库
 - [x] form
 - [x] upload
 - [x] calendar
-- [ ] virtual scroll list
+- [x] virtual scroll list
 
 ## TODO
 
