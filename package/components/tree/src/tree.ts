@@ -35,28 +35,11 @@ export const treeProps = {
     type: String,
     default: 'children',
   },
-  defaultExpandedKeys: {
-    type: Array as PropType<BaseType[]>,
-    default: () => [],
-  },
-  defaultSelectedKeys: {
-    type: Array as PropType<BaseType[]>,
-    default: () => [],
-  },
-  defaultCheckedKeys: {
-    type: Array as PropType<BaseType[]>,
-    default: () => [],
-  },
   showCheckbox: Boolean,
   selectable: Boolean,
   multiple: Boolean,
   onLoad: Function as PropType<(node: TreeNode) => Promise<TreeOptions[]>>,
 } as const;
-
-export const treeEmits = {
-  'update:defaultSelectedKeys': (keys: BaseType[]) => keys,
-  'update:defaultCheckedKeys': (keys: BaseType[]) => keys,
-};
 
 export const treeNodeProps = {
   node: {

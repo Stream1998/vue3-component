@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import { TreeNode, TreeOptions, treeProps, BaseType, treeEmits } from './tree';
+import { TreeNode, TreeOptions, treeProps, BaseType } from './tree';
 import createNamespace from '@lxd/utils/createBEM';
 import XdTreeNode from './treeNode.vue';
 import XdVirtualList from '@lxd/components/virtualList';
@@ -11,13 +11,22 @@ defineOptions({
 
 const bem = createNamespace('tree');
 const props = defineProps(treeProps);
+const defaultExpandedKeys = defineModel<BaseType[]>('defaultExpandedKeys', {
+  default: [],
+});
+const defaultSelectedKeys = defineModel<BaseType[]>('defaultSelectedKeys', {
+  default: [],
+});
+const defaultCheckedKeys = defineModel<BaseType[]>('defaultCheckedKeys', {
+  default: [],
+});
 const tree = ref<TreeNode[]>();
 
 // 建立字段映射
 function createTreeOptions(
   labelField: string,
   keyFeild: string,
-  childrenField: string
+  childrenField: string,
 ) {
   return {
     getLabel(node: TreeOptions) {
@@ -35,17 +44,17 @@ function createTreeOptions(
 const treeOptions = createTreeOptions(
   props.labelField,
   props.keyField,
-  props.childrenField
+  props.childrenField,
 );
 
 // 格式化数据，构建树
 function createTree(
   data: TreeOptions[],
-  parent: TreeNode | null = null
+  parent: TreeNode | null = null,
 ): TreeNode[] {
   function traverse(
     data: TreeOptions[],
-    parent: TreeNode | null = null
+    parent: TreeNode | null = null,
   ): TreeNode[] {
     return data.map((node: TreeOptions) => {
       const children = treeOptions.getChildren(node) || [];
@@ -75,7 +84,7 @@ watch(
   },
   {
     immediate: true,
-  }
+  },
 );
 
 // 逆序遍历
@@ -86,7 +95,7 @@ const reverse = (array, cb) => {
 };
 
 // 根据指定的默认展开key数组，扁平化树
-const expandedKeysSet = ref<Set<BaseType>>(new Set(props.defaultExpandedKeys));
+const expandedKeysSet = ref<Set<BaseType>>(new Set(defaultExpandedKeys.value));
 
 const flattenTree = computed(() => {
   const expandedKeys = expandedKeysSet.value;
@@ -151,18 +160,16 @@ function isLoading(node: TreeNode) {
   return loadingKeysSet.value.has(node.key);
 }
 
-const emit = defineEmits(treeEmits);
-
 const selectedKeys = ref<BaseType[]>([]);
 
 watch(
-  () => props.defaultSelectedKeys,
+  defaultSelectedKeys,
   (data: BaseType[]) => {
     selectedKeys.value = data;
   },
   {
     immediate: true,
-  }
+  },
 );
 
 function handleSelect(node: TreeNode) {
@@ -178,14 +185,14 @@ function handleSelect(node: TreeNode) {
   } else {
     _selectedKeys = [node.key];
   }
-  emit('update:defaultSelectedKeys', _selectedKeys);
+  defaultSelectedKeys.value = _selectedKeys;
 }
 
 function isSelected(node: TreeNode): boolean {
   return selectedKeys.value.includes(node.key);
 }
 
-const checkedKeysSet = ref<Set<BaseType>>(new Set(props.defaultCheckedKeys));
+const checkedKeysSet = ref<Set<BaseType>>(new Set(defaultCheckedKeys.value));
 
 function toggleCheck(node: TreeNode, state: boolean) {
   if (!node) return;
@@ -204,7 +211,7 @@ function toggleCheck(node: TreeNode, state: boolean) {
 function handleCheck(node: TreeNode, state: boolean) {
   toggleCheck(node, state);
   updateIndeterminate(node);
-  emit('update:defaultCheckedKeys', Array.from(checkedKeysSet.value));
+  defaultCheckedKeys.value = Array.from(checkedKeysSet.value);
 }
 
 function isChecked(node: TreeNode) {

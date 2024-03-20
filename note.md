@@ -107,6 +107,22 @@ export default defineConfig({
 });
 ```
 
+### defineModel(Vue3.4+)
+
+```ts
+// 默认名称为 modelValue
+// 之前的做法是在 props 中声明
+const model = defineModel<string>({ default: 'defaultValue' });
+// 自定义
+const custom = defineModel<number>('custom', { default: 0 });
+
+// 修改方法与 ref 相同
+// 之前的做法是
+// const emit = defineEmits(['update:modelValue']);
+// emit('update:modelValue', 'change');
+model.value = 'change';
+```
+
 ## 多层组件嵌套,传递插槽
 
 ### 每个层级都写一遍插槽(间接传递)

@@ -21,6 +21,7 @@ defineOptions({
 });
 const props = defineProps(inputProps);
 const emit = defineEmits(inputEmits);
+const model = defineModel<string>({ default: '' });
 const slots = useSlots();
 const bem = createNamespace('input');
 const formItemContext = inject(FormItemInjectKey);
@@ -37,7 +38,7 @@ watch(
     updateModelValue(value);
     // 阻止报错，将错误上报到父组件
     formItemContext?.validate('change').catch(() => {});
-  }
+  },
 );
 
 onMounted(() => {
@@ -50,7 +51,7 @@ const showEyeIcon = computed(
     props.type === 'password' &&
     props.showPassword &&
     !props.disabled &&
-    !props.readonly
+    !props.readonly,
 );
 const passwordVisiable = ref(false);
 
@@ -63,11 +64,11 @@ function updatePasswordVisable() {
 
 const showClearIcon = computed(
   () =>
-    props.modelValue && props.clearable && !props.readonly && !props.disabled
+    props.modelValue && props.clearable && !props.readonly && !props.disabled,
 );
 
 function handleClear() {
-  emit('update:modelValue', '');
+  model.value = '';
   emit('input', '');
 }
 
@@ -80,7 +81,7 @@ function updateModelValue(value: string = '') {
 function handleInput(e: Event) {
   const value = (e.target as HTMLInputElement).value;
   emit('input', value);
-  emit('update:modelValue', value);
+  model.value = value;
 }
 
 function handleChange(e: Event) {

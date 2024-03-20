@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import createNamespace from '@lxd/utils/createBEM';
-import { DateInfo, calendarEmits, calendarProps } from './calendar';
+import { DateInfo, calendarProps } from './calendar';
 import dayjs from 'dayjs';
 import { ref, computed, watch } from 'vue';
 
@@ -8,10 +8,12 @@ defineOptions({
   name: 'xd-calendar',
 });
 const props = defineProps(calendarProps);
-const emits = defineEmits(calendarEmits);
 const bem = createNamespace('calendar');
+const model = defineModel<Date>({
+  default: new Date(),
+});
 
-const today = ref(dayjs(props.modelValue));
+const today = ref(dayjs(model.value));
 const range = computed(() => {
   const result = props.range?.map(v => dayjs(v)) ?? [];
   if (result.length === 2) {
@@ -113,7 +115,7 @@ function getButtonType(date) {
 }
 
 watch(today, date => {
-  emits('update:modelValue', date.toDate());
+  model.value = date.toDate();
 });
 </script>
 <template>

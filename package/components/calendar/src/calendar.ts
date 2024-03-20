@@ -9,19 +9,9 @@ export type DateInfo = {
 };
 
 export const calendarProps = {
-  modelValue: {
-    type: Date,
-    default: new Date(),
-  },
   range: {
     type: Array as unknown as PropType<DateRange>,
   },
 } as const;
 
 export type CalendarProps = ExtractPropTypes<typeof calendarProps>;
-
-export const calendarEmits = {
-  'update:modelValue': (value: Date) => value,
-};
-
-export type CalendarEmits = typeof calendarEmits;

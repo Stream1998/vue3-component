@@ -16,4 +16,4 @@ Vue3 组件库
 
 ## TODO
 
-- [ ] use `defineModel`
+- [x] use `defineModel`

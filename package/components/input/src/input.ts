@@ -18,7 +18,6 @@ export const inputProps = {
 export type InputProps = Partial<ExtractPropTypes<typeof inputProps>>;
 
 export const inputEmits = {
-  'update:modelValue': (value: string) => typeof value === 'string',
   input: (value: string) => typeof value === 'string',
   change: (value: string) => typeof value === 'string',
   focus: (e: FocusEvent) => e instanceof FocusEvent,

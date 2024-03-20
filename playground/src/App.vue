@@ -11,14 +11,14 @@ import virtualListView from './views/virtualList.vue';
 import { computed } from 'vue';
 
 const components = [
-  { name: 'icon', component: iconView, show: false },
-  { name: 'tree', component: treeView, show: false },
-  { name: 'checkbox', component: checkbox, show: false },
-  { name: 'button', component: buttonView, show: false },
-  { name: 'input', component: inputView, show: false },
-  { name: 'form', component: formView, show: false },
-  { name: 'upload', component: uploadView, show: false },
-  { name: 'calendar', component: calendarView, show: false },
+  { name: 'icon', component: iconView, show: true },
+  { name: 'tree', component: treeView, show: true },
+  { name: 'checkbox', component: checkbox, show: true },
+  { name: 'button', component: buttonView, show: true },
+  { name: 'input', component: inputView, show: true },
+  { name: 'form', component: formView, show: true },
+  { name: 'upload', component: uploadView, show: true },
+  { name: 'calendar', component: calendarView, show: true },
   { name: 'virtualList', component: virtualListView, show: true },
 ];
 

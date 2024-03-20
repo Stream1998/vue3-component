@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { BaseType } from '@lxd/components/tree';
 // import { TreeOptions, TreeNode } from '@lxd/components/tree';
 
 function createData(level = 4, baseKey = ''): any {
@@ -63,11 +64,19 @@ function createLabel(level: number): string {
 
 const data = ref(createData());
 
-// const selectKeys = ref<BaseType[]>(['0']);
-// const checkedKeys = ref<BaseType[]>(['40']);
+const selectKeys = ref<BaseType[]>(['40']);
+const checkedKeys = ref<BaseType[]>(['40']);
+const expandedKeys = ref<BaseType[]>(['40']);
 </script>
 <template>
-  <xd-tree :data="data" :show-checkbox="true">
+  <xd-tree
+    v-model:default-selected-keys="selectKeys"
+    v-model:default-checked-keys="checkedKeys"
+    v-model:default-expanded-keys="expandedKeys"
+    selectable
+    :data="data"
+    :show-checkbox="true"
+  >
     <template #label="{ node }"> {{ node.key }} - {{ node.label }} </template>
   </xd-tree>
 </template>
